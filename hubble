@@ -180,7 +180,12 @@ logs)
 
 
 **)
-  echo "Flag:
+  echo "- Script:  Write by Satea.io"
+  echo "- Web: https://satea.io"
+  echo "- Discord: https://discord.com/invite/satea"
+  echo "- X: https://x.com/SateaLabs"
+  echo "-"
+  echo " Flag:
   install              Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
   stop                 Stop all Hubble docker
   up                   Start all Hubble docker
