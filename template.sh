@@ -2,6 +2,25 @@
  version=1.00
  createTime="2024 06-24"
 
+# 定义要检查的包列表
+packages=(
+    jq
+    curl
+    wget
+)
+
+# 检查并安装每个包
+for pkg in "${packages[@]}"; do
+    if dpkg-query -W "$pkg" >/dev/null 2>&1; then
+        echo "$pkg 已安装，跳过安装步骤。"
+    else
+        echo "安装 $pkg..."
+        sudo apt update
+        sudo apt install -y "$pkg"
+    fi
+done
+
+
 
 ##定义脚本变量
 
