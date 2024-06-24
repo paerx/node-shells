@@ -143,11 +143,15 @@ upgrade)
 
     version
     ;;
+    pkg)
+    installpkg
+    ;;
 
 
 **)
 
  #定义帮助信息 例子
+  echo "-"
   echo "- Script:  Write by Satea.io"
   echo "- Web: https://satea.io"
   echo "- Discord: https://discord.com/invite/satea"
