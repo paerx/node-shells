@@ -34,7 +34,7 @@ curl -sSL https://download.thehubble.xyz/bootstrap.sh | bash
 }
 
 function Makeenvfile() {
-  
+
 
 cat <<EOL >> .env
 FC_NETWORK_ID=1
@@ -154,6 +154,13 @@ upgrade)
   upgrade
 
   ;;
+
+logs)
+
+  logs
+
+  ;;
+
 
 
 **)
