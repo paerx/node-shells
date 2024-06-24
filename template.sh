@@ -1,12 +1,17 @@
+#脚本版本
+ version=1.00
+ createTime="2024 06-24"
+
+
 ##定义脚本变量
 
-#举例： 这个脚本需要依赖  test01 test02 username passwd  四个变量
+#举例： 这个脚本需要依赖  test01 test02 username passwd
 
-#  第一步: 在ALL_SATEA_VARS定义变量 用逗号隔开, 方便手动模式下 Manual函数解析需要的变量
+#  第一步: 在ALL_SATEA_VARS定义变量 用逗号隔开,方便手动模式下Manual函数解析需要的变量
 
 ALL_SATEA_VARS="test01,test02,username,passwd"
 
-#  第二步: 创建变量 并设置站位符号, 方便自动模式下 系统替换变量
+#  第二步: 创建变量 并设置站位符号, 方便自动模式下系统替换变量
 
 test01={{SATEA_VARS_test01}}
 
@@ -37,8 +42,20 @@ function Manual() {
   done
 }
 
-function install(){
+#版本函数
+function version(){
+   # 表头
+   printf "%-15s\t%-20s\n" "Version" "CreateTime"
 
+   # 表格内容
+   printf "%-15s\t%-20s\n" "$version" "$createTime"
+}
+
+
+
+
+function install(){
+     echo "install steps"
 }
 
 
@@ -101,17 +118,22 @@ upgrade)
 
     ;;
 
+  version)
+
+    version
+    ;;
+
 
 **)
 
  #定义帮助信息 例子
-
-  echo "Flag:
+  echo " Flag:
   install              Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
   stop                 Stop all Hubble docker
   up                   Start all Hubble docker
   upgrade              Upgrade an existing installation of Hubble
   logs                 Show the logs of the Hubble service
   clean                Remove the Hubble from your server
+  version              Show Script Version"
   ;;
 esac
