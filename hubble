@@ -34,6 +34,7 @@ curl -sSL https://download.thehubble.xyz/bootstrap.sh | bash
 }
 
 function Makeenvfile() {
+  
 
 cat <<EOL >> .env
 FC_NETWORK_ID=1
@@ -56,6 +57,7 @@ sed -i "s|your-fid|$FID|g" .env
 
 function mkdirDir() {
       mkdir /root/hubble
+      cd /root/hubble
 }
 
 
