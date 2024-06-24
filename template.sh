@@ -10,7 +10,8 @@ packages=(
 )
 
 # 检查并安装每个包
-for pkg in "${packages[@]}"; do
+function installpkg() {
+    for pkg in "${packages[@]}"; do
     if dpkg-query -W "$pkg" >/dev/null 2>&1; then
         echo "$pkg 已安装，跳过安装步骤。"
     else
@@ -19,6 +20,7 @@ for pkg in "${packages[@]}"; do
         sudo apt install -y "$pkg"
     fi
 done
+}
 
 
 
@@ -146,8 +148,14 @@ upgrade)
 **)
 
  #定义帮助信息 例子
+  echo "- Script:  Write by Satea.io"
+  echo "- Web: https://satea.io"
+  echo "- Discord: https://discord.com/invite/satea"
+  echo "- X: https://x.com/SateaLabs"
+  echo "-"
   echo " Flag:
   install              Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
+  pkg                  Install Dependent packages
   stop                 Stop all Hubble docker
   up                   Start all Hubble docker
   upgrade              Upgrade an existing installation of Hubble
