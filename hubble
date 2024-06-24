@@ -1,3 +1,7 @@
+#脚本版本
+ version=1.01
+ createTime="2024 06-24"
+
 #定义变量
 
 ALL_SATEA_VARS="Eth_Rpc_Url,Op_Rrc_Url,FID"
@@ -27,6 +31,14 @@ function Manual() {
 
   done
 }
+
+
+function version(){
+
+   printf "%-15s\t%-20s\n" "Version" "CreateTime"
+   printf "%-15s\t%-20s\n" "$version" "$createTime"
+}
+
 
 
 function WgetPackages(){
@@ -161,6 +173,10 @@ logs)
 
   ;;
 
+  version)
+
+    version
+    ;;
 
 
 **)
@@ -171,6 +187,7 @@ logs)
   upgrade              Upgrade an existing installation of Hubble
   logs                 Show the logs of the Hubble service
   clean                Remove the Hubble from your server
-  resetData            Reset rockData,This will cause a resynchronization"
+  resetData            Reset rockData,This will cause a resynchronization
+  version              Show Script Version"
   ;;
 esac
