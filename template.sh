@@ -1,7 +1,3 @@
-#脚本版本
- version=1.00
- createTime="2024 06-24"
-
 # 定义要检查的包列表
 packages=(
     jq
@@ -13,9 +9,9 @@ packages=(
 function installpkg() {
     for pkg in "${packages[@]}"; do
     if dpkg-query -W "$pkg" >/dev/null 2>&1; then
-        echo "$pkg 已安装，跳过安装步骤。"
+        echo "$pkg installed,skip"
     else
-        echo "安装 $pkg..."
+        echo "install  $pkg..."
         sudo apt update
         sudo apt install -y "$pkg"
     fi
@@ -63,21 +59,38 @@ function Manual() {
   done
 }
 
-#版本函数
-function version(){
-   # 表头
-   printf "%-15s\t%-20s\n" "Version" "CreateTime"
-
-   # 表格内容
-   printf "%-15s\t%-20s\n" "$version" "$createTime"
-}
-
-
 
 
 function install(){
      echo "install steps"
 }
+
+
+
+
+function About() {
+echo '        _                 _                  _                _               _
+       / /\              / /\               /\ \             /\ \            / /\
+      / /  \            / /  \              \_\ \           /  \ \          / /  \
+     / / /\ \__        / / /\ \             /\__ \         / /\ \ \        / / /\ \
+    / / /\ \___\      / / /\ \ \           / /_ \ \       / / /\ \_\      / / /\ \ \
+    \ \ \ \/___/     / / /  \ \ \         / / /\ \ \     / /_/_ \/_/     / / /  \ \ \
+     \ \ \          / / /___/ /\ \       / / /  \/_/    / /____/\       / / /___/ /\ \
+ _    \ \ \        / / /_____/ /\ \     / / /          / /\____\/      / / /_____/ /\ \
+/_/\__/ / /       / /_________/\ \ \   / / /          / / /______     / /_________/\ \ \
+\ \/___/ /       / / /_       __\ \_\ /_/ /          / / /_______\   / / /_       __\ \_\
+ \_____\/        \_\___\     /____/_/ \_\/           \/__________/   \_\___\     /____/_/'
+
+echo
+echo -e "\xF0\x9F\x9A\x80Satea Node Installer
+Website: ​https://www.satea.io/
+Twitter: ​https://x.com/SateaLabs
+Discord: ​https://discord.com/invite/satea
+Gitbook: ​https://satea.gitbook.io/satea
+Version: ​V1.0.0
+Introduction: Satea is a DePINFI aggregator dedicated to breaking down the traditional barriers that limits access to computing resources.  "
+}
+
 
 
 case $1 in
@@ -139,32 +152,19 @@ upgrade)
 
     ;;
 
-  version)
-
-    version
-    ;;
-    pkg)
-    installpkg
-    ;;
-
 
 **)
 
  #定义帮助信息 例子
-  echo "-"
-  echo "- Script:  Write by Satea.io"
-  echo "- Web: https://satea.io"
-  echo "- Discord: https://discord.com/invite/satea"
-  echo "- X: https://x.com/SateaLabs"
-  echo "-"
-  echo " Flag:
+ About
+ echo""
+  echo "Flag:
   install              Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
   pkg                  Install Dependent packages
   stop                 Stop all Hubble docker
   up                   Start all Hubble docker
   upgrade              Upgrade an existing installation of Hubble
   logs                 Show the logs of the Hubble service
-  clean                Remove the Hubble from your server
-  version              Show Script Version"
+  clean                Remove the Hubble from your server"
   ;;
 esac
