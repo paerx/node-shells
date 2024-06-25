@@ -69,11 +69,11 @@ function install(){
 
 
 function About() {
-echo ' __     _     _____     __     _
-/ _\   /_\   /__   \   /__\   /_\
-\ \   //_\\    / /\/  /_\    //_\\
-_\ \ /  _  \  / /    //__   /  _  \
-\__/ \_/ \_/  \/     \__/   \_/ \_/'
+echo '   _____    ___       ______   ______   ___
+  / ___/   /   |     /_  __/  / ____/  /   |
+  \__ \   / /| |      / /    / __/    / /| |
+ ___/ /  / ___ |     / /    / /___   / ___ |
+/____/  /_/  |_|    /_/    /_____/  /_/  |_|'
 
 echo
 echo -e "\xF0\x9F\x9A\x80 Satea Node Installer
@@ -85,6 +85,7 @@ Version: ​V1.0.0
 Introduction: Satea is a DePINFI aggregator dedicated to breaking down the traditional barriers that limits access to computing resources.  "
 echo""
 }
+
 
 
 
