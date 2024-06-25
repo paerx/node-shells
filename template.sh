@@ -1,3 +1,5 @@
+Version="1.0.1"
+
 # 定义要检查的包列表
 packages=(
     jq
@@ -81,7 +83,7 @@ Website: https://www.satea.io/
 Twitter: https://x.com/SateaLabs
 Discord: https://discord.com/invite/satea
 Gitbook: https://satea.gitbook.io/satea
-Version: V1.0.0
+Version: $Version
 Introduction: Satea is a DePINFI aggregator dedicated to breaking down the traditional barriers that limits access to computing resources.  "
 echo""
 }
