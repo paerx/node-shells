@@ -77,11 +77,11 @@ echo '   _____    ___       ______   ______   ___
 
 echo
 echo -e "\xF0\x9F\x9A\x80 Satea Node Installer
-Website: ​https://www.satea.io/
-Twitter: ​https://x.com/SateaLabs
-Discord: ​https://discord.com/invite/satea
-Gitbook: ​https://satea.gitbook.io/satea
-Version: ​V1.0.0
+Website: https://www.satea.io/
+Twitter: https://x.com/SateaLabs
+Discord: https://discord.com/invite/satea
+Gitbook: https://satea.gitbook.io/satea
+Version: V1.0.0
 Introduction: Satea is a DePINFI aggregator dedicated to breaking down the traditional barriers that limits access to computing resources.  "
 echo""
 }
