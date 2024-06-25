@@ -76,14 +76,16 @@ _\ \ /  _  \  / /    //__   /  _  \
 \__/ \_/ \_/  \/     \__/   \_/ \_/'
 
 echo
-echo -e "\xF0\x9F\x9A\x80Satea Node Installer
+echo -e "\xF0\x9F\x9A\x80 Satea Node Installer
 Website: ​https://www.satea.io/
 Twitter: ​https://x.com/SateaLabs
 Discord: ​https://discord.com/invite/satea
 Gitbook: ​https://satea.gitbook.io/satea
 Version: ​V1.0.0
 Introduction: Satea is a DePINFI aggregator dedicated to breaking down the traditional barriers that limits access to computing resources.  "
+echo""
 }
+
 
 
 
@@ -151,7 +153,6 @@ upgrade)
 
  #定义帮助信息 例子
  About
- echo""
   echo "Flag:
   install              Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
   pkg                  Install Dependent packages
