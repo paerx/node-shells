@@ -300,9 +300,6 @@ install)
 tx_node)
 tx_node
   ;;
-install_node)
-install_node
-  ;;
 installpkg)
 installpkg
   ;;
