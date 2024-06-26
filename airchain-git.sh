@@ -27,6 +27,7 @@ done
 }
 
 
+
 ALL_SATEA_VARS="name,passwd"
 
 
@@ -66,6 +67,7 @@ fi
 # 验证安装后的 Go 版本
 echo "当前 Go 版本："
 go version
+
  cd $HOME
     git clone https://github.com/airchains-network/wasm-station.git
     git clone https://github.com/airchains-network/tracks.git
