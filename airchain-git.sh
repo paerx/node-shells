@@ -26,11 +26,6 @@ function installpkg() {
 done
 }
 
-# 验证安装后的 Go 版本
-echo "当前 Go 版本："
-go version
-
-
 
 ALL_SATEA_VARS="name,passwd"
 
@@ -68,6 +63,9 @@ else
     echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
     source ~/.bashrc
 fi
+# 验证安装后的 Go 版本
+echo "当前 Go 版本："
+go version
  cd $HOME
     git clone https://github.com/airchains-network/wasm-station.git
     git clone https://github.com/airchains-network/tracks.git
@@ -303,6 +301,9 @@ tx_node
 install_node)
 install_node
   ;;
+installpkg)
+installpkg
+  ;;
 vars)
 VadVars
   ;;
@@ -328,7 +329,7 @@ stationd_log
  About
   echo "Flag:
   install_node         Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
-  pkg                  Install Dependent packages
+  installpkg           Install Dependent packages
   restart              restart the service
   tx_node              start tx
   addr_key             show your key
