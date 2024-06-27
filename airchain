@@ -294,6 +294,7 @@ install)
       . .env.sh   #导入变量
 
       #其他安装函数
+      installpkg
       install_node
     fi
   ;;
