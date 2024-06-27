@@ -64,7 +64,7 @@ function Manual() {
   done
 }
 function install_node(){
-. ~/.bashrc
+PATH=$PATH:/usr/local/go/bin
 # 验证安装后的 Go 版本
 echo "当前 Go 版本："
 go version
@@ -295,7 +295,6 @@ install)
       . .env.sh   #导入变量
 
       #其他安装函数
-      installpkg
       install_node
     fi
   ;;
