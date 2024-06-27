@@ -301,8 +301,8 @@ install)
 tx_node)
 tx_node
   ;;
-installpkg)
-installpkg
+init)
+init
   ;;
 vars)
 VadVars
