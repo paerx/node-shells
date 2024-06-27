@@ -14,7 +14,7 @@ packages=(
 )
 
 # 检查并安装每个包
-function installpkg() {
+function init() {
     for pkg in "${packages[@]}"; do
     if dpkg-query -W "$pkg" >/dev/null 2>&1; then
         echo "$pkg installed,skip"
@@ -24,6 +24,14 @@ function installpkg() {
         sudo apt install -y "$pkg"
     fi
 done
+    if command -v go >/dev/null 2>&1; then
+    echo "go 已安装，跳过安装步骤。"
+else
+    echo "下载并安装 Go..."
+    wget -c https://golang.org/dl/go1.22.4.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+    source ~/.bashrc
+fi
 }
 
 
@@ -56,14 +64,6 @@ function Manual() {
   done
 }
 function install_node(){
-    if command -v go >/dev/null 2>&1; then
-    echo "go 已安装，跳过安装步骤。"
-else
-    echo "下载并安装 Go..."
-    wget -c https://golang.org/dl/go1.22.4.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
-    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
-    source ~/.bashrc
-fi
 # 验证安装后的 Go 版本
 echo "当前 Go 版本："
 go version
@@ -328,8 +328,8 @@ stationd_log
  #定义帮助信息 例子
  About
   echo "Flag:
-  install_node         Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
-  installpkg           Install Dependent packages
+  install         Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
+  init            Install Dependent packages
   restart              restart the service
   tx_node              start tx
   addr_key             show your key
