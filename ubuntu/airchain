@@ -216,8 +216,8 @@ function addr_key(){
     cat $HOME/.tracks/junction-accounts/keys/$name.wallet.json
 }
 function restart(){
-sudo systemctl restart evmosd
-sudo systemctl restart tracksd
+sudo systemctl restart wasmstationd.service
+sudo systemctl restart stationd.service
 }
 
 function clean(){
