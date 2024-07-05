@@ -92,8 +92,8 @@ git clone https://github.com/FuelLabs/chain-configuration.git
 echo $rpckey $name
 rpc="https://sepolia.infura.io/v3/$rpckey"
 echo $rpc
-fuel-core-keygen new --key-type peering 2>&1 |tee $HOME/fule/key
-keypair=$(cat key |awk -F':' '{print $3}' |awk -F'"' '{print $2}')
+fuel-core-keygen new --key-type peering 2>&1 |tee $HOME/fuel/key
+keypair=$(cat $HOME/fuel/key |awk -F':' '{print $3}' |awk -F'"' '{print $2}')
 cat >$HOME/fuel/fuel.sh<<EOF
 fuel-core run \
 --service-name="$name" \
@@ -111,18 +111,18 @@ fuel-core run \
 --relayer-log-page-size=500 \
 --sync-block-stream-buffer-size 30
 EOF
-pm2 start $HOME/fule/fuel.sh --name fuel-core && pm2 save
+pm2 start $HOME/fuel/fuel.sh --name fuel-core && pm2 save
 else
 	echo "install error"
 fi
 }
 
 
-function fuel_log(){
+function log(){
     pm2 logs fuel-core
 }
 
-function fuel_version(){
+function version(){
     $HOME/.fuelup/bin/fuel-core -V
 }
 
@@ -130,7 +130,7 @@ function restart(){
     pm2 restart fuel-core
 }
 
-function fuel_key(){
+function key(){
 cat $HOME/fuel/key
 }
 
@@ -201,14 +201,14 @@ clean
 restart)
 restart
   ;;
-fuel_key)
-fuel_key
+key)
+key
  ;;
-fuel_log)
-fuel_log
+log)
+log
 ;;
-fuel_version)
-fuel_version
+version)
+version
 ;;
 
 **)
@@ -219,9 +219,9 @@ fuel_version
   install         Install fuel with manual mode,  If carrying the --auto parameter, start Automatic mode
   init            Install Dependent packages
   restart         restart the service         
-  fuel_key        show your key
-  fuel_version    show your version
-  fuel_log        show your logs
+  key             show your key
+  version         show your version
+  log             show your logs
   clean           Remove the fuel from your server"
   ;;
 esac
