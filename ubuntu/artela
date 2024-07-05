@@ -186,7 +186,7 @@ function Val_address(){
 }
 
 function clean(){
-  pm2 stop artelad && save
+  pm2 stop artelad && pm2 delete artelad && pm2 save
   rm -rf artela
   rm -rf $HOME/.artelad
 }
