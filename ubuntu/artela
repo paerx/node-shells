@@ -1,0 +1,290 @@
+Version="1.0.1"
+
+# 定义要检查的包列表
+packages=(
+      curl \
+      build-essential \
+      git \
+      wget \
+      jq \
+      make \
+      gcc \
+      nano 
+      tmux 
+      htop \
+      pkg-config \
+      libssl-dev \
+      libleveldb-dev \
+      tar \
+      clang \
+      bsdmainutils \
+      ncdu \
+      unzip \
+      libleveldb-dev \
+      lz4 \
+      snapd
+)
+
+# 检查并安装每个包
+function init() {
+    for pkg in "${packages[@]}"; do
+    if dpkg-query -W "$pkg" >/dev/null 2>&1; then
+        echo "$pkg installed,skip"
+    else
+        echo "install  $pkg..."
+        sudo apt update
+        sudo apt install -y "$pkg"
+    fi
+done
+    if command -v pm2 &> /dev/null
+then
+    echo "pm2 已安装，跳过安装步骤"
+else
+    echo "pm2 未安装，开始安装"
+    apt update
+    apt install npm -y
+    npm install -g n
+    n latest
+    hash -r
+
+    npm install pm2@latest -g
+fi
+if command -v go >/dev/null 2>&1; then
+    echo "go 已安装，跳过安装步骤。"
+else
+    echo "下载并安装 Go..."
+    wget -c https://golang.org/dl/go1.22.4.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+
+fi
+}
+
+
+
+##定义脚本变量
+
+#举例： 这个脚本需要依赖  test01 test02 username passwd
+
+#  第一步: 在ALL_SATEA_VARS定义变量 用逗号隔开,方便手动模式下Manual函数解析需要的变量
+
+ALL_SATEA_VARS="username,wallet_name"
+
+#  第二步: 创建变量 并设置站位符号, 方便自动模式下系统替换变量
+
+
+username={{SATEA_VARS_username}}
+
+wallet_name={{SATEA_VARS_wallet_name}}
+
+
+##显示需要接收的变量
+function VadVars(){
+     echo "$ALL_SATEA_VARS"
+}
+
+#手动模式下 解析并填入变量的函数
+function Manual() {
+   >.env.sh
+   chmod +x .env.sh
+   for i in `echo $ALL_SATEA_VARS | tr ',' '\n' `;do
+
+   i_split=`echo $i |tr -d "{" | tr -d "}"`
+
+   read  -p "$i_split ="  i_split_vars
+
+   echo "$i_split=$i_split_vars" >>.env.sh
+
+  done
+}
+
+
+
+function install(){
+    echo "install steps"
+    cd $HOME
+    git clone https://github.com/artela-network/artela
+    cd artela
+    git checkout v0.4.7-rc6
+    make install
+
+    # 配置artelad
+    artelad config chain-id artela_11822-1
+    artelad init "$username" --chain-id artela_11822-1
+    artelad config node tcp://localhost:27857
+    curl -L https://snapshots.dadunode.com/artela/addrbook.json > $HOME/.artelad/config/genesis.json
+	  curl -L https://snapshots.dadunode.com/artela/artela-addrbook.json > $HOME/.artelad/config/addrbook.json
+    cp $HOME/.artelad/config/app.toml $HOME/.artelad/config/app.toml.bk
+	  cp $HOME/.artelad/config/config.toml $HOME/.artelad/config/config.toml.bk
+    PEERS="fa399d6cd3bb916d29286d9716ff92edea93fbd7@37.60.234.189:26656,798507c70f1c07fae1482c76493519701f09b97d@194.163.143.106:26656,ff0cc435ea9aa517e173a1cee2da7c2f8e6a6477@84.247.172.100:45656,8f960b4df7006862c327763cb73e87952f4541e0@207.180.224.165:26656,85ac11d6a532a44572374dbcae1f662a086dba16@103.156.0.148:26656,45f81854c59866751ad57d6ee6cb0ec954a28d32@142.93.108.68:45656,ffb62a8a11fc30e70c961d730245088a300abc9a@38.242.212.97:26656,c5558976b2a389e8e287b12a28b8bdc881964c16@84.247.174.246:21656,a1912cc804fd3787ac0929ee280af79b511cfe6a@64.44.166.166:26656,f214a847e85cfa25c624f963d877a527a0e7b281@85.90.246.25:45656,9774751a932a3d409b183a49606c9bdb0c444030@64.44.41.37:26656,5308b1358e2a810c10fb76e275e1f6fc578e6b46@171.249.220.194:26656,fd9cab0baeb879727e599bd1140a1b877fc512b5@143.244.183.193:26656,dad7c539131550d23297e3de48650a5f2dda6fe1@51.195.62.197:30656,c8f489c3c6538341eff2d1febc0116dc2b0e2156@52.146.144.31:30656,bc07590d14265718be789c0f2d083e2f3c225128@65.109.237.151:45656,ca573699310857159d340c50a1145823346e793b@94.130.220.233:14656,c042d17f689b484f5d1700049aa6d7c95a137d2f@109.199.97.50:45656,ba15c6d74db1862ef923258fc48f52952efcacc4@134.209.102.188:26656,c738edceba9882809a359484fdee51fff292dfd4@45.152.243.107:45656,f747959f2ce58fc4b1ca722dbadfaf194b763763@84.247.188.85:45656,de39a999b879bcb027c9799338585cd9db12ec95@95.217.106.24:45656,24fe7d49e0cd91b957f61505e09e5481ffaf700a@173.249.15.225:26656,56cf39f21f6e32cd20d803a18d5519ec364f7956@139.59.171.201:19656,fb9a5a4a4bb8daa10a001f1a19526357ad354920@37.60.230.103:45656,9d23cb6a11faa9f787c4b287670cd46ab79af8b1@188.34.152.37:45656,a01a5d0015e685655b1334041d907ce2db51c02f@173.249.16.25:45656,2d05a43b48a3b0a83d098e40550e6d3c7b54f2e3@89.23.121.197:26656,28c6ff1859a00798be435dbb7c225539070a4245@31.169.73.194:29656,3ba920b68ced7ad7b0344b63a9c44f4160515dd4@64.23.198.53:27656"
+    sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' .artelad/config/config.toml
+    sed -i -e 's|^minimum-gas-prices *=.*|minimum-gas-prices = "0.02uart"|' .artelad/config/app.toml
+    sed -i \
+  -e 's|^pruning *=.*|pruning = "custom"|' \
+  -e 's|^pruning-keep-recent *=.*|pruning-keep-recent = "362880"|' \
+  -e 's|^pruning-interval *=.*|pruning-interval = "100"|' \
+  -e 's|^pruning-keep-every *=.*|pruning-keep-recent = "0"|' \
+  .artelad/config/app.toml
+
+	  sed -i -e "s%:8080%:27880%; s%:9090%:27890%; s%:9091%:27891%; s%:8545%:27845%; s%:8546%:27846%; s%:6065%:27865%" .artelad/config/app.toml
+	  sed -i 's/localhost/0.0.0.0/g' .artelad/config/app.toml
+	  sed -i 's/127.0.0.1/0.0.0.0/g' .artelad/config/config.toml
+	  sed -i -e "s%:26658%:27858%; s%:26657%:27857%; s%:6060%:27860%; s%:26656%:27856%; s%:26660%:27861%" .artelad/config/config.toml
+    # 下载快照
+    artelad tendermint unsafe-reset-all --home $HOME/.artelad --keep-addr-book
+    mv $HOME/.artelad/priv_validator_state.json mv $HOME/.artelad/priv_validator_state.json.backup
+    curl -L https://snapshots.dadunode.com/artela/artela_latest_tar.lz4 | tar -I lz4 -xf - -C $HOME/.artelad/data
+
+    mv $HOME/.artelad/priv_validator_state.json.backup $HOME/.artelad/data/priv_validator_state.json
+
+    # 使用 PM2 启动节点进程
+
+    pm2 start artelad -- start && pm2 save 
+
+}
+
+function create_validator(){
+  artelad tx staking create-validator \
+      --amount="1000000000000000000uart" \
+      --pubkey=$(artelad tendermint show-validator) \
+      --moniker="$username" \
+      --commission-rate="0.10" \
+      --commission-max-rate="0.20" \
+      --commission-max-change-rate="0.01" \
+      --min-self-delegation="1" \
+      --gas="200000" \
+      --chain-id=artela_11822-1 \
+      --from=$(artelad keys list |grep name |awk '{print $2}') \
+      -y
+}
+
+function create_wallet(){
+  artelad keys add $wallet_name 2>&1 |tee $wallet_name.txt
+}
+
+function log(){
+  pm2 logs artelad
+}
+
+function height(){
+  artelad status | jq .SyncInfo.latest_block_height
+}
+
+function restart(){
+  pm2 restart artelad
+}
+
+function balances(){
+  artelad q bank balances $(artelad keys show $wallet_name -a)
+}
+
+function address(){
+  artelad keys show $wallet_name -a
+}
+
+function Val_address(){
+  artelad debug addr $(artelad keys show $wallet_name -a)
+}
+
+function clean(){
+  pm2 stop artelad && save
+  rm -rf artela
+  rm -rf $HOME/.artelad
+}
+function About() {
+echo '   _____    ___       ______   ______   ___
+  / ___/   /   |     /_  __/  / ____/  /   |
+  \__ \   / /| |      / /    / __/    / /| |
+ ___/ /  / ___ |     / /    / /___   / ___ |
+/____/  /_/  |_|    /_/    /_____/  /_/  |_|'
+
+echo
+echo -e "\xF0\x9F\x9A\x80 Satea Node Installer
+Website: https://www.satea.io/
+Twitter: https://x.com/SateaLabs
+Discord: https://discord.com/invite/satea
+Gitbook: https://satea.gitbook.io/satea
+Version: $Version
+Introduction: Satea is a DePINFI aggregator dedicated to breaking down the traditional barriers that limits access to computing resources.  "
+echo""
+}
+
+
+
+
+
+case $1 in
+
+install)
+
+  if [ "$2" = "--auto" ]
+  then
+     echo "-> Automatic mode, please ensure that ALL SATEA_VARS(`VadVars`) have been replaced !"
+          sleep 3
+
+     #这里使用自动模式下的 安装 函数
+     install
+
+    else
+      echo "Unrecognized variable(`VadVars`) being replaced, manual mode"
+
+      #手动模式 使用Manual 获取用户输入的变量
+
+      Manual      #获取用户输入的变量
+      . .env.sh   #导入变量
+
+      #其他安装函数
+      install
+
+
+    fi
+  ;;
+
+vars)
+ #展示变量
+VadVars
+
+  ;;
+clean)
+clean
+  ;;
+create_validator)
+create_validator
+  ;;
+Val_address)
+Val_address
+  ;;
+address)
+address
+  ;;
+balances)
+balances
+  ;;
+restart)
+restart
+  ;;
+height)
+height
+  ;;
+log)
+log
+  ;;
+create_wallet)
+create_wallet
+  ;;
+**)
+
+ #定义帮助信息 例子
+ About
+  echo "Flag:
+  install              Install artela with manual mode,  If carrying the --auto parameter, start Automatic mode
+  init                 Install Dependent packages
+  log                  Show the logs of the artela service
+  clean                Remove the artela from your server
+  height               View current height
+  create_wallet        Create a wallet
+  address              show your wallet address
+  balances             show your balances
+  Val_address          show your validator address
+  clean                delete your service"
+  ;;
+esac
