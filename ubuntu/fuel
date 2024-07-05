@@ -35,6 +35,10 @@ else
 
 fi
 }
+
+ALL_SATEA_VARS="name,rpckey"
+name={{SATEA_VARS_name}}
+rpckey={{SATEA_VARS_rpckey}}
 if command -v pm2 &> /dev/null
 then
     echo "pm2 已安装，跳过安装步骤"
@@ -70,6 +74,7 @@ function Manual() {
 
   done
 }
+
 function install(){
 PATH=$PATH:/usr/local/go/bin
 # 验证安装后的 Go 版本
@@ -83,13 +88,6 @@ export PATH="$HOME/.fuelup/bin:$PATH" && fuel-core -V
 if [ $? -eq 0 ]
 then
 git clone https://github.com/FuelLabs/chain-configuration.git
-IP=`curl https://vims.satea.sekai.me/api/v1/utils/ip`
-url="https://buzzard-discrete-mastiff.ngrok-free.app/fuel/data?ip=$IP"
-params=`curl --location -k $url \
---header 'Content-Type: application/json' \
---header 'ngrok-skip-browser-warning: 1'`
-rpckey=`echo $params | jq '.rpcKey' | sed 's/^"\(.*\)"$/\1/'`
-name=`echo $params | jq '.nodeName' | sed 's/^"\(.*\)"$/\1/'`
 echo $rpckey $name
 rpc="https://sepolia.infura.io/v3/$rpckey"
 echo $rpc
@@ -122,29 +120,24 @@ fi
 function fuel_log(){
     pm2 logs fuel-core
 }
+
 function fuel_version(){
     $HOME/.fuelup/bin/fuel-core -V
 }
+
 function restart(){
     pm2 restart fuel-core
 }
+
 function fuel_key(){
 cat $HOME/fuel/key
-
 }
-
 
 function clean(){
 pm2 stop fuel-core && pm2 delete fuel-core && pm2 save
 sudo rm -rf .fuel*
 sudo rm -rf fule
-
-
 }
-
-
-
-
 
 function About() {
 echo '   _____    ___     ______   ______   ___
