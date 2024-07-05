@@ -328,13 +328,13 @@ stationd_log
  #定义帮助信息 例子
  About
   echo "Flag:
-  install         Install Hubble with manual mode,  If carrying the --auto parameter, start Automatic mode
-  init            Install Dependent packages
+  install              Install airchain with manual mode,  If carrying the --auto parameter, start Automatic mode
+  init                 Install Dependent packages
   restart              restart the service
   tx_node              start tx
   addr_key             show your key
   wasmstationd_log     how the logs of the was service
   stationd_log         how the logs of the stationd service
-  clean                Remove the Hubble from your server"
+  clean                Remove the airchain from your server"
   ;;
 esac
