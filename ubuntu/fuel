@@ -34,12 +34,7 @@ else
     echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
 
 fi
-}
-
-ALL_SATEA_VARS="name,rpckey"
-name={{SATEA_VARS_name}}
-rpckey={{SATEA_VARS_rpckey}}
-if command -v pm2 &> /dev/null
+    if command -v pm2 &> /dev/null
 then
     echo "pm2 已安装，跳过安装步骤"
 else
@@ -52,6 +47,12 @@ else
 
     npm install pm2@latest -g
 fi
+}
+
+ALL_SATEA_VARS="name,rpckey"
+name={{SATEA_VARS_name}}
+rpckey={{SATEA_VARS_rpckey}}
+
 
 
 
