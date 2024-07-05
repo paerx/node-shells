@@ -284,7 +284,6 @@ create_wallet
   create_wallet        Create a wallet
   address              show your wallet address
   balances             show your balances
-  Val_address          show your validator address
-  clean                delete your service"
+  Val_address          show your validator address"
   ;;
 esac
