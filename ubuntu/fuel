@@ -189,9 +189,6 @@ install)
 init)
 init
   ;;
-install)
-install
-  ;;
 vars)
 VadVars
   ;;
