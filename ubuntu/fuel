@@ -221,6 +221,6 @@ fuel_version
   fuel_key        show your key
   fuel_version    show your version
   fuel_log        show your logs
-  clean           Remove the fuel from your server
+  clean           Remove the fuel from your server"
   ;;
 esac
