@@ -1,4 +1,63 @@
-#!/usr/bin/env bash
+packages=(
+    jq
+    curl
+    wget
+    docker.io
+    net-tools
+)
+
+function installpkg() {
+ if [ -f /etc/redhat-release ]; then
+        # CentOS/RHEL
+        for pkg in "${packages[@]}"; do
+            if rpm -qa | grep -qw "$pkg"; then
+                echo "$pkg is already installed, skipping."
+            else
+                echo "Installing $pkg..."
+                sudo yum install -y "$pkg"
+            fi
+        done
+    elif [ -f /etc/lsb-release ] || [ -f /etc/debian_version ]; then
+         apt update
+        for pkg in "${packages[@]}"; do
+            if dpkg-query -W "$pkg" >/dev/null 2>&1; then
+                echo "$pkg is already installed, skipping."
+            else
+                echo "Installing $pkg..."
+                sudo apt install -y "$pkg"
+            fi
+        done
+    else
+        echo "!! Unsupported OS,If you are a system other than Centos and Ubuntu, please contact us for remote processing !!"
+        exit 1
+    fi
+}
+
+
+
+ALL_SATEA_VARS="noVars"
+
+function VadVars(){
+     echo "$ALL_SATEA_VARS"
+}
+
+function Manual() {
+   >.env.sh
+   chmod +x .env.sh
+   for i in `echo $ALL_SATEA_VARS | tr ',' '\n' `;do
+
+   i_split=`echo $i |tr -d "{" | tr -d "}"`
+
+   read  -p "$i_split ="  i_split_vars
+
+   echo "$i_split=$i_split_vars" >>.env.sh
+
+  done
+}
+
+
+function install(){
+   #!/usr/bin/env bash
 set -e
 
 # Get the environment/OS
@@ -34,8 +93,6 @@ fi
 # Print the detected environment and processor
 echo "$environment environment with $processor found."
 
-
-# Check if any hashing command is available
 if ! (command -v openssl > /dev/null || command -v shasum > /dev/null || command -v sha256sum > /dev/null); then
   echo "No supported hashing commands found."
   read -p "Would you like to install openssl? (y/n) " -n 1 -r
@@ -539,7 +596,7 @@ cat <<EOF
 
 EOF
 
-cd ${NODEHOME} &&
+cd ${NODEHOME} && sed -i 's/RUN apt-get install -y logrotate//g' Dockerfile &&
 docker-safe build --no-cache -t local-dashboard -f Dockerfile --build-arg RUNDASHBOARD=${RUNDASHBOARD} .
 
 cat <<EOF
@@ -550,7 +607,10 @@ cat <<EOF
 
 EOF
 
+
 cd ${NODEHOME}
+
+
 if [[ "$(uname)" == "Darwin" ]]; then
   sed "s/- '8080:8080'/- '$DASHPORT:$DASHPORT'/" docker-compose.tmpl > docker-compose.yml
   sed -i '' "s/- '9001-9010:9001-9010'/- '$SHMEXT:$SHMEXT'/" docker-compose.yml
@@ -560,6 +620,8 @@ else
   sed -i "s/- '9001-9010:9001-9010'/- '$SHMEXT:$SHMEXT'/" docker-compose.yml
   sed -i "s/- '10001-10010:10001-10010'/- '$SHMINT:$SHMINT'/" docker-compose.yml
 fi
+
+
 ./docker-up.sh
 
 echo "Starting image. This could take a while..."
@@ -582,7 +644,7 @@ then
 cat <<EOF
   To use the Web Dashboard:
     1. Note the IP address that you used to connect to the node. This could be an external IP, LAN IP or localhost.
-    2. Open a web browser and navigate to the web dashboard at https://<Node IP address>:$DASHPORT Passwd=aaaaaabc1
+    2. Open a web browser and navigate to the web dashboard at https://<Node IP address>:$DASHPORT, Password: $DASHPASS
     3. Go to the Settings tab and connect a wallet.
     4. Go to the Maintenance tab and click the Start Node button.
 
@@ -600,3 +662,126 @@ To use the Command Line Interface:
 
 EOF
 
+
+}
+
+function clean() {
+     id=`docker ps -a | grep shardeum | awk '{print $1}'`
+     netid=`docker network ls | grep shardeum | awk '{print $1}'`
+     imgid=`docker images | grep local-dashboard | awk '{print $3}'`
+
+     docker stop $id ; docker rm $id;docker network rm $netid;docker rmi  $imgid
+
+     rm -r ~/shm_install
+     rm -r ~/.shardeum
+     echo "clean success."
+}
+
+
+function stop() {
+     id=`docker ps | grep shardeum | awk '{print $1}'`
+     docker stop  $id
+}
+
+function up() {
+     id=`docker ps -a | grep shardeum | awk '{print $1}'`
+     docker start  $id
+}
+
+function status() {
+      docker ps | grep shardeum  | grep local-dashboard
+      if [ $? -eq 0 ]
+      then
+        echo "INFO: shardeum docker Running"
+      else
+        echo "ERR: shardeum docker NotFound"
+      fi
+
+     netstat -anpt | grep 8081 | grep docker-proxy
+      if [ $? -eq 0 ]
+      then
+        echo "INFO: Port  LISTEN OK,AdminWeb: https://<server_ip>:8081"
+      else
+        echo "ERR:  Port Down"
+      fi
+}
+
+
+
+function About() {
+echo '   _____    ___     ______   ______   ___
+  / ___/   /   |   /_  __/  / ____/  /   |
+  \__ \   / /| |    / /    / __/    / /| |
+ ___/ /  / ___ |   / /    / /___   / ___ |
+/____/  /_/  |_|  /_/    /_____/  /_/  |_|'
+
+echo
+echo -e "\xF0\x9F\x9A\x80 Satea Node Installer
+Website: ​https://www.satea.io/
+Twitter: ​https://x.com/SateaLabs
+Discord: ​https://discord.com/invite/satea
+Gitbook: ​https://satea.gitbook.io/satea
+Version: ​V1.0.0
+Introduction: Satea is a DePINFI aggregator dedicated to breaking down the traditional barriers that limits access to computing resources.  "
+echo""
+}
+
+
+
+case $1 in
+
+install)
+
+  if [ "$2" = "--auto" ]
+  then
+     echo "-> Automatic mode, please ensure that ALL SATEA_VARS(`VadVars`) have been replaced !"
+     sleep 3
+     install
+    else
+    echo "Unrecognized variable(`VadVars`) being replaced, manual mode"
+     curl -O https://raw.githubusercontent.com/shardeum/validator-dashboard/main/installer.sh && chmod +x installer.sh && ./installer.sh
+    fi
+  ;;
+
+init)
+installpkg
+
+  ;;
+
+vars)
+ #展示变量
+VadVars
+
+  ;;
+
+clean)
+ clean
+
+  ;;
+
+stop)
+
+stop
+  ;;
+up)
+
+up
+;;
+status)
+status
+;;
+
+**)
+
+ #定义帮助信息 例子
+ About
+  echo "Flag:
+  install              Install Shm with manual mode,  If carrying the --auto parameter, start Automatic mode
+  init                 Install Dependent packages
+  stop                 Stop all Shm docker
+  up                   Start all Shm docker
+  logs                 Show the logs of the Shm service
+  clean                Remove the Shm from your server
+  status               Show Status"
+  ;;
+esac
