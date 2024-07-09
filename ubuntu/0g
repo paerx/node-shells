@@ -56,7 +56,7 @@ function install(){
 echo "install steps"
 sudo apt-get update -y
 rm -rf 0g-storage-node
-git clone -b v0.3.2 https://github.com/0glabs/0g-storage-node.git
+git clone -b v0.3.3 https://github.com/0glabs/0g-storage-node.git
 
 #进入对应目录构建
 cd 0g-storage-node
@@ -69,7 +69,7 @@ cargo build --release
 cd ~/0g-storage-node/run
 
 sed -i "s/miner_key = \"\"/miner_key = \"$mnemonic\"/" config.toml
-sed -i 's#log_sync_start_block_number = 334797#log_sync_start_block_number = 802#g' config.toml
+sed -i 's#log_sync_start_block_number = 512567#log_sync_start_block_number = 802#g' config.toml
 sed -i 's#blockchain_rpc_endpoint = "https://rpc-testnet.0g.ai"#blockchain_rpc_endpoint = "https://storage.0gnode.xyz/"#g' config.toml
 sed -i 's#log_contract_address = "0xb8F03061969da6Ad38f0a4a9f8a86bE71dA3c8E7"#log_contract_address = "0x8873cc79c5b3b5666535C825205C9a128B1D75F1"#g' config.toml
 sed -i 's#mine_contract_address = "0x96D90AAcb2D5Ab5C69c1c351B0a0F105aae490bE"#mine_contract_address = "0x85F6722319538A805ED5733c5F4882d96F1C7384"#g' config.toml
