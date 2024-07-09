@@ -24,10 +24,10 @@ done
 }
 
 
-ALL_SATEA_VARS="mnemonic"
+ALL_SATEA_VARS="privateKey"
 
 
-mnemonic={{SATEA_VARS_mnemonic}}
+privateKey={{SATEA_VARS_privateKey}}
 
 
 
@@ -68,7 +68,7 @@ cargo build --release
 #后台运行
 cd ~/0g-storage-node/run
 
-sed -i "s/miner_key = \"\"/miner_key = \"$mnemonic\"/" config.toml
+sed -i "s/miner_key = \"\"/miner_key = \"$privateKey\"/" config.toml
 sed -i 's#log_sync_start_block_number = 512567#log_sync_start_block_number = 802#g' config.toml
 sed -i 's#blockchain_rpc_endpoint = "https://rpc-testnet.0g.ai"#blockchain_rpc_endpoint = "https://storage.0gnode.xyz/"#g' config.toml
 sed -i 's#log_contract_address = "0xb8F03061969da6Ad38f0a4a9f8a86bE71dA3c8E7"#log_contract_address = "0x8873cc79c5b3b5666535C825205C9a128B1D75F1"#g' config.toml
