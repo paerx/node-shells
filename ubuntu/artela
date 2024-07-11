@@ -123,20 +123,18 @@ function install(){
     curl -L https://snapshots.dadunode.com/artela/artela-addrbook.json > $HOME/.artelad/config/addrbook.json
     cp $HOME/.artelad/config/app.toml $HOME/.artelad/config/app.toml.bk
     cp $HOME/.artelad/config/config.toml $HOME/.artelad/config/config.toml.bk
-    PEERS="fa399d6cd3bb916d29286d9716ff92edea93fbd7@37.60.234.189:26656,798507c70f1c07fae1482c76493519701f09b97d@194.163.143.106:26656,ff0cc435ea9aa517e173a1cee2da7c2f8e6a6477@84.247.172.100:45656,8f960b4df7006862c327763cb73e87952f4541e0@207.180.224.165:26656,85ac11d6a532a44572374dbcae1f662a086dba16@103.156.0.148:26656,45f81854c59866751ad57d6ee6cb0ec954a28d32@142.93.108.68:45656,ffb62a8a11fc30e70c961d730245088a300abc9a@38.242.212.97:26656,c5558976b2a389e8e287b12a28b8bdc881964c16@84.247.174.246:21656,a1912cc804fd3787ac0929ee280af79b511cfe6a@64.44.166.166:26656,f214a847e85cfa25c624f963d877a527a0e7b281@85.90.246.25:45656,9774751a932a3d409b183a49606c9bdb0c444030@64.44.41.37:26656,5308b1358e2a810c10fb76e275e1f6fc578e6b46@171.249.220.194:26656,fd9cab0baeb879727e599bd1140a1b877fc512b5@143.244.183.193:26656,dad7c539131550d23297e3de48650a5f2dda6fe1@51.195.62.197:30656,c8f489c3c6538341eff2d1febc0116dc2b0e2156@52.146.144.31:30656,bc07590d14265718be789c0f2d083e2f3c225128@65.109.237.151:45656,ca573699310857159d340c50a1145823346e793b@94.130.220.233:14656,c042d17f689b484f5d1700049aa6d7c95a137d2f@109.199.97.50:45656,ba15c6d74db1862ef923258fc48f52952efcacc4@134.209.102.188:26656,c738edceba9882809a359484fdee51fff292dfd4@45.152.243.107:45656,f747959f2ce58fc4b1ca722dbadfaf194b763763@84.247.188.85:45656,de39a999b879bcb027c9799338585cd9db12ec95@95.217.106.24:45656,24fe7d49e0cd91b957f61505e09e5481ffaf700a@173.249.15.225:26656,56cf39f21f6e32cd20d803a18d5519ec364f7956@139.59.171.201:19656,fb9a5a4a4bb8daa10a001f1a19526357ad354920@37.60.230.103:45656,9d23cb6a11faa9f787c4b287670cd46ab79af8b1@188.34.152.37:45656,a01a5d0015e685655b1334041d907ce2db51c02f@173.249.16.25:45656,2d05a43b48a3b0a83d098e40550e6d3c7b54f2e3@89.23.121.197:26656,28c6ff1859a00798be435dbb7c225539070a4245@31.169.73.194:29656,3ba920b68ced7ad7b0344b63a9c44f4160515dd4@64.23.198.53:27656"
+    SEEDS=""
+    PEERS="ca8bce647088a12bc030971fbcce88ea7ffdac50@84.247.153.99:26656,a3501b87757ad6515d73e99c6d60987130b74185@85.239.235.104:3456,2c62fb73027022e0e4dcbdb5b54a9b9219c9b0c1@51.255.228.103:26687,fbe01325237dc6338c90ddee0134f3af0378141b@158.220.88.66:3456,fde2881b06a44246a893f37ecb710020e8b973d1@158.220.84.64:3456,12d057b98ecf7a24d0979c0fba2f341d28973005@116.202.162.188:10656,9e2fbfc4b32a1b013e53f3fc9b45638f4cddee36@47.254.66.177:26656,92d95c7133275573af25a2454283ebf26966b188@167.235.178.134:27856,2dd98f91eaea966b023edbc88aa23c7dfa1f733a@158.220.99.30:26680"
     sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.artelad/config/config.toml
-    sed -i -e 's|^minimum-gas-prices *=.*|minimum-gas-prices = "0.02uart"|' $HOME/.artelad/config/app.toml
-    sed -i \
-  -e 's|^pruning *=.*|pruning = "custom"|' \
-  -e 's|^pruning-keep-recent *=.*|pruning-keep-recent = "362880"|' \
-  -e 's|^pruning-interval *=.*|pruning-interval = "100"|' \
-  -e 's|^pruning-keep-every *=.*|pruning-keep-recent = "0"|' \
-  $HOME/.artelad/config/app.toml
-
-	  sed -i -e "s%:8080%:27880%; s%:9090%:27890%; s%:9091%:27891%; s%:8545%:27845%; s%:8546%:27846%; s%:6065%:27865%" $HOME/.artelad/config/app.toml
-	  sed -i 's/localhost/0.0.0.0/g' $HOME/.artelad/config/app.toml
-	  sed -i 's/127.0.0.1/0.0.0.0/g' $HOME/.artelad/config/config.toml
-	  sed -i -e "s%:26658%:27858%; s%:26657%:27857%; s%:6060%:27860%; s%:26656%:27856%; s%:26660%:27861%" $HOME/.artelad/config/config.toml
+    sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.artelad/config/app.toml
+    sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.artelad/config/app.toml
+    sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"0\"/" $HOME/.artelad/config/app.toml
+    sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"10\"/" $HOME/.artelad/config/app.toml
+    sed -i -e 's/max_num_inbound_peers = 40/max_num_inbound_peers = 100/' -e 's/max_num_outbound_peers = 10/max_num_outbound_peers = 100/' $HOME/.artelad/config/config.toml
+    sed -i -e "s%:8080%:27880%; s%:9090%:27890%; s%:9091%:27891%; s%:8545%:27845%; s%:8546%:27846%; s%:6065%:27865%" $HOME/.artelad/config/app.toml
+    sed -i 's/localhost/0.0.0.0/g' $HOME/.artelad/config/app.toml
+    sed -i 's/127.0.0.1/0.0.0.0/g' $HOME/.artelad/config/config.toml
+    sed -i -e "s%:26658%:27858%; s%:26657%:27857%; s%:6060%:27860%; s%:26656%:27856%; s%:26660%:27861%" $HOME/.artelad/config/config.toml
     # 下载快照
     artelad tendermint unsafe-reset-all --home $HOME/.artelad --keep-addr-book
     mv $HOME/.artelad/priv_validator_state.json mv $HOME/.artelad/priv_validator_state.json.backup
