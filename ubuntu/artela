@@ -55,27 +55,20 @@ else
     echo "下载并安装 Go..."
     wget -c https://golang.org/dl/go1.22.4.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
     echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
-    . .bashrc
 
 fi
 }
 
 
 
-##定义脚本变量
 
-#举例： 这个脚本需要依赖  test01 test02 username passwd
-
-#  第一步: 在ALL_SATEA_VARS定义变量 用逗号隔开,方便手动模式下Manual函数解析需要的变量
 
 ALL_SATEA_VARS="username,wallet_name"
 
-#  第二步: 创建变量 并设置站位符号, 方便自动模式下系统替换变量
 
 
 username={{SATEA_VARS_username}}
 
-wallet_name={{SATEA_VARS_wallet_name}}
 
 
 ##显示需要接收的变量
@@ -101,50 +94,63 @@ function Manual() {
 
 
 function install(){
-    echo "install steps"
+    # 安装所有二进制文件
     cd $HOME
     git clone https://github.com/artela-network/artela
     cd artela
-    git checkout v0.4.7-rc7
+    git checkout v0.4.7-rc7-fix-execution 
     make install
-    wget https://github.com/artela-network/artela/releases/download/v0.4.7-rc7/artelad_0.4.7_rc7_Linux_amd64.tar.gz
-    tar xf artelad_0.4.7_rc7_Linux_amd64.tar.gz
-    mkdir $HOME/libs
+    
+    cd $HOME
+    wget https://github.com/artela-network/artela/releases/download/v0.4.7-rc7-fix-execution/artelad_0.4.7_rc7_fix_execution_Linux_amd64.tar.gz
+    tar -xvf artelad_0.4.7_rc7_fix_execution_Linux_amd64.tar.gz
+    mkdir libs
     mv $HOME/libaspect_wasm_instrument.so $HOME/libs/
     mv $HOME/artelad /usr/local/bin/
     echo 'export LD_LIBRARY_PATH=$HOME/libs:$LD_LIBRARY_PATH' >> ~/.bash_profile
-    source ~/.bash_profile
+    . ~/.bash_profile
+    
 
     # 配置artelad
     artelad config chain-id artela_11822-1
     artelad init "$username" --chain-id artela_11822-1
-    artelad config node tcp://localhost:27857
-    curl -L https://snapshots.dadunode.com/artela/addrbook.json > $HOME/.artelad/config/genesis.json
-    curl -L https://snapshots.dadunode.com/artela/artela-addrbook.json > $HOME/.artelad/config/addrbook.json
-    cp $HOME/.artelad/config/app.toml $HOME/.artelad/config/app.toml.bk
-    cp $HOME/.artelad/config/config.toml $HOME/.artelad/config/config.toml.bk
+    artelad config node tcp://localhost:3457
+
+
+
+    # 获取初始文件和地址簿
+    curl -L https://snapshots.dadunode.com/artela/genesis.json > $HOME/.artelad/config/genesis.json
+    curl -L https://snapshots.dadunode.com/artela/addrbook.json > $HOME/.artelad/config/addrbook.json
+
+    # 配置节点
     SEEDS=""
     PEERS="ca8bce647088a12bc030971fbcce88ea7ffdac50@84.247.153.99:26656,a3501b87757ad6515d73e99c6d60987130b74185@85.239.235.104:3456,2c62fb73027022e0e4dcbdb5b54a9b9219c9b0c1@51.255.228.103:26687,fbe01325237dc6338c90ddee0134f3af0378141b@158.220.88.66:3456,fde2881b06a44246a893f37ecb710020e8b973d1@158.220.84.64:3456,12d057b98ecf7a24d0979c0fba2f341d28973005@116.202.162.188:10656,9e2fbfc4b32a1b013e53f3fc9b45638f4cddee36@47.254.66.177:26656,92d95c7133275573af25a2454283ebf26966b188@167.235.178.134:27856,2dd98f91eaea966b023edbc88aa23c7dfa1f733a@158.220.99.30:26680"
     sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.artelad/config/config.toml
+
+    # 配置裁剪
     sed -i -e "s/^pruning *=.*/pruning = \"custom\"/" $HOME/.artelad/config/app.toml
     sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"100\"/" $HOME/.artelad/config/app.toml
     sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"0\"/" $HOME/.artelad/config/app.toml
     sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"10\"/" $HOME/.artelad/config/app.toml
     sed -i -e 's/max_num_inbound_peers = 40/max_num_inbound_peers = 100/' -e 's/max_num_outbound_peers = 10/max_num_outbound_peers = 100/' $HOME/.artelad/config/config.toml
-    sed -i -e "s%:8080%:27880%; s%:9090%:27890%; s%:9091%:27891%; s%:8545%:27845%; s%:8546%:27846%; s%:6065%:27865%" $HOME/.artelad/config/app.toml
-    sed -i 's/localhost/0.0.0.0/g' $HOME/.artelad/config/app.toml
-    sed -i 's/127.0.0.1/0.0.0.0/g' $HOME/.artelad/config/config.toml
-    sed -i -e "s%:26658%:27858%; s%:26657%:27857%; s%:6060%:27860%; s%:26656%:27856%; s%:26660%:27861%" $HOME/.artelad/config/config.toml
-    # 下载快照
+
+    # 配置端口
+    node_address="tcp://localhost:3457"
+    sed -i -e "s%^proxy_app = \"tcp://127.0.0.1:26658\"%proxy_app = \"tcp://127.0.0.1:3458\"%; s%^laddr = \"tcp://127.0.0.1:26657\"%laddr = \"tcp://127.0.0.1:3457\"%; s%^pprof_laddr = \"localhost:6060\"%pprof_laddr = \"localhost:3460\"%; s%^laddr = \"tcp://0.0.0.0:26656\"%laddr = \"tcp://0.0.0.0:3456\"%; s%^prometheus_listen_addr = \":26660\"%prometheus_listen_addr = \":3466\"%" $HOME/.artelad/config/config.toml
+    sed -i -e "s%^address = \"tcp://localhost:1317\"%address = \"tcp://0.0.0.0:3417\"%; s%^address = \":8080\"%address = \":3480\"%; s%^address = \"localhost:9090\"%address = \"0.0.0.0:3490\"%; s%^address = \"localhost:9091\"%address = \"0.0.0.0:3491\"%; s%:8545%:3445%; s%:8546%:3446%; s%:6065%:3465%" $HOME/.artelad/config/app.toml
+    echo "export Artela_RPC_PORT=$node_address" >> $HOME/.bash_profile
+    . $HOME/.bash_profile   
+
+    pm2 start artelad -- start && pm2 save && pm2 startup
+    
     artelad tendermint unsafe-reset-all --home $HOME/.artelad --keep-addr-book
-    mv $HOME/.artelad/priv_validator_state.json mv $HOME/.artelad/priv_validator_state.json.backup
-    curl -L https://snapshots.dadunode.com/artela/artela_latest_tar.lz4 | tar -I lz4 -xf - -C $HOME/.artelad/
+    echo "导入快照。。。。"
+    curl https://snapshots-testnet.nodejumper.io/artela-testnet/artela-testnet_latest.tar.lz4 | lz4 -dc - | tar -xf - -C $HOME/.artelad
+    #lz4 -dc artela-testnet_latest.tar.lz4 | tar -x -C $HOME/.artelad
+  
 
-    mv $HOME/.artelad/priv_validator_state.json.backup $HOME/.artelad/data/priv_validator_state.json
+    pm2 restart artelad
 
-    # 使用 PM2 启动节点进程
-
-    pm2 start artelad -- start && pm2 save 
 
 }
 
@@ -271,11 +277,11 @@ restart
 height)
 height
   ;;
-init)
-init
-  ;;
 log)
 log
+  ;;
+init)
+init
   ;;
 create_wallet)
 create_wallet
