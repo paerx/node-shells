@@ -55,6 +55,7 @@ else
     echo "下载并安装 Go..."
     wget -c https://golang.org/dl/go1.22.4.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
     echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+    . .bashrc
 
 fi
 }
