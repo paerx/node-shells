@@ -104,8 +104,15 @@ function install(){
     cd $HOME
     git clone https://github.com/artela-network/artela
     cd artela
-    git checkout v0.4.7-rc6
+    git checkout v0.4.7-rc7
     make install
+    wget https://github.com/artela-network/artela/releases/download/v0.4.7-rc7/artelad_0.4.7_rc7_Linux_amd64.tar.gz
+    tar xf artelad_0.4.7_rc7_Linux_amd64.tar.gz
+    mkdir $HOME/libs
+    mv $HOME/libaspect_wasm_instrument.so $HOME/libs/
+    mv $HOME/artelad /usr/local/bin/
+    echo 'export LD_LIBRARY_PATH=$HOME/libs:$LD_LIBRARY_PATH' >> ~/.bash_profile
+    source ~/.bash_profile
 
     # 配置artelad
     artelad config chain-id artela_11822-1
@@ -264,6 +271,9 @@ restart
   ;;
 height)
 height
+  ;;
+init)
+init
   ;;
 log)
 log
