@@ -8,8 +8,8 @@ wget https://github.com/SateaLabs/node-shells/raw/main/f2-alert/f2pool-w  && chm
 
 Account Settings -> API -> hash_rate/worker/list 
 
-# Get workerlist from f2pool
-f2pool-w -u <yourname> -b <currency> -key apiToken
+#Run
+./f2pool-w -u <yourname> -b <currency> -key <apiToken>
 
 #::
 f2pool-w -u test -b aleo-staging -key apiToken
