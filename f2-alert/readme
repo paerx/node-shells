@@ -1,1 +1,20 @@
 
+
+
+
+download f2pool-w 
+
+#
+chmod +x f2pool-w
+
+# run
+f2pool-w -u <yourname> -b <currency> -key apiToken
+
+#ex
+f2pool-w -u test -b aleo-staging -key apiToken
+
+Result:
+
+Workername  Speed/1m  Status
+test01       917       ok
+test02       123       bad
