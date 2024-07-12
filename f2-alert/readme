@@ -1,20 +1,20 @@
 
 
+Download f2pool-w
+wget https://github.com/SateaLabs/node-shells/raw/main/f2-alert/f2pool-w  && chmod +x f2pool-w
 
 
-download f2pool-w 
+# Get Apikey from your F2pool Account (need hash_rate/worker/list)
 
-#
-chmod +x f2pool-w
+Account Settings -> API -> hash_rate/worker/list 
 
-# run
+# Get workerlist from f2pool
 f2pool-w -u <yourname> -b <currency> -key apiToken
 
-#ex
+#::
 f2pool-w -u test -b aleo-staging -key apiToken
 
 Result:
-
 Workername  Speed/1m  Status
 test01       917       ok
 test02       123       bad
