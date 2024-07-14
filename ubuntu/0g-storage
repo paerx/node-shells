@@ -55,6 +55,7 @@ function Manual() {
 function install(){
 echo "install steps"
 sudo apt-get update -y
+cd
 rm -rf 0g-storage-node
 git clone -b v0.3.3 https://github.com/0glabs/0g-storage-node.git
 
