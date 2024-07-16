@@ -68,7 +68,7 @@ ALL_SATEA_VARS="username,wallet_name"
 
 
 username={{SATEA_VARS_username}}
-
+wallet_name={{SATEA_VARS_wallet_name}}
 
 
 ##显示需要接收的变量
@@ -197,7 +197,10 @@ function address(){
 function Val_address(){
   artelad debug addr $(artelad keys show $wallet_name -a)
 }
-
+function import_key(){
+  artelad config keyring-backend file
+  artelad keys add  $wallet_name --recover
+}
 function clean(){
   pm2 stop artelad && pm2 delete artelad && pm2 save
   rm -rf artela
@@ -287,6 +290,9 @@ init
 create_wallet)
 create_wallet
   ;;
+import_wallet)
+import_wallet
+  ;;
 **)
 
  #定义帮助信息 例子
@@ -300,6 +306,7 @@ create_wallet
   create_wallet        Create a wallet
   address              show your wallet address
   balances             show your balances
-  Val_address          show your validator address"
+  Val_address          show your validator address
+  import_wallet        import your wallet"
   ;;
 esac
