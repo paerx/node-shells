@@ -108,7 +108,8 @@ function install(){
     mv $HOME/libaspect_wasm_instrument.so $HOME/libs/
     mv $HOME/artelad /usr/local/bin/
     echo 'export LD_LIBRARY_PATH=$HOME/libs:$LD_LIBRARY_PATH' >> ~/.bash_profile
-    . ~/.bash_profile
+    cd
+    . .bash_profile
     
 
     # 配置artelad
