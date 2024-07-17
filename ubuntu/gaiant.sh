@@ -8,7 +8,7 @@ packages=(
 )
 
 # 检查并安装每个包
-function installpkg() {
+function init() {
     for pkg in "${packages[@]}"; do
     if dpkg-query -W "$pkg" >/dev/null 2>&1; then
         echo "$pkg installed,skip"
@@ -154,7 +154,7 @@ nodeid
  About
   echo "Flag:
   install              Install gaianet with manual mode,  If carrying the --auto parameter, start Automatic mode
-  pkg                  Install Dependent packages
+  init                 Install Dependent packages
   stop                 Stop all gaianet
   nodeid               show your node_id
   upgrade              Upgrade an existing installation of gaianet
