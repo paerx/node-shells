@@ -146,7 +146,9 @@ upgrade
 nodeid)
 nodeid
   ;;
-
+init)
+init
+  ;;
 
 **)
 
