@@ -2,7 +2,6 @@ Version="1.0.1"
 
 # 定义要检查的包列表
 packages=(
-    jq
     curl
     wget
 )
