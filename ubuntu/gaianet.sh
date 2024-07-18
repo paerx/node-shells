@@ -61,6 +61,9 @@ function nodeid(){
 
 function clean(){
      curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/uninstall.sh' | bash
+     rm -rf $HOME/.wasmedge
+     rm -rf $HOME/gaianet
+     pkill -9 wasmedge
 }
 
 function upgrade(){
