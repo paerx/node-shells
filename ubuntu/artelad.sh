@@ -171,6 +171,7 @@ function create_validator(){
 }
 
 function create_wallet(){
+  artelad config keyring-backend file
   wallet_name=`cat .artelad/config/config.toml |grep moniker |awk -F'"' '{print $2}'`
   artelad keys add $wallet_name 2>&1 |tee $wallet_name.txt
 }
