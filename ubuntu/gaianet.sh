@@ -1,9 +1,8 @@
 Version="1.0.1"
 
-# 定义要检查的包列表
 packages=(
     curl
-    wget
+    docker-ce
 )
 
 # 检查并安装每个包
@@ -21,17 +20,18 @@ done
 
 
 
-
-
-##显示需要接收的变量
 function VadVars(){
+
      echo "$ALL_SATEA_VARS"
+
 }
 
-#手动模式下 解析并填入变量的函数
+
 function Manual() {
    >.env.sh
+
    chmod +x .env.sh
+
    for i in `echo $ALL_SATEA_VARS | tr ',' '\n' `;do
 
    i_split=`echo $i |tr -d "{" | tr -d "}"`
@@ -40,39 +40,62 @@ function Manual() {
 
    echo "$i_split=$i_split_vars" >>.env.sh
 
-  done
+   done
 }
 
 
 
 function install(){
      echo "install steps"
-     cd
-     curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/install.sh' | bash
-     export PATH="$HOME/gaianet/bin:$PATH"
-     gaianet init
-     gaianet start
-     gaianet info
-}    
+    docker run -itd --name gaianet \
+    -p 8080:8080 \
+    -v $(pwd)/qdrant_storage:/root/gaianet/qdrant/storage:z \
+    gaianet/phi-3-mini-instruct-4k_paris:latest
+
+  status
+
+}
+
+function status() {
+   max_attempts=20
+   attempt=1
+   interval=6
+    while [ $attempt -le $max_attempts ]; do
+    echo "Attempt $attempt: Checking GaiaNet node status..."
+    if docker logs gaianet | grep -q 'The GaiaNet node is started at'; then
+        echo "The GaiaNet node has started successfully."
+        nodeid
+        docker logs gaianet | grep  'The GaiaNet node is started at'
+        exit 0
+    else
+        echo "The GaiaNet node has not started yet. Waiting for $interval seconds..."
+        sleep $interval
+        attempt=$((attempt + 1))
+    fi
+done
+echo "The GaiaNet node did not start within the given attempts."
+exit 1
+}
 
 function nodeid(){
-     gaianet info
+     docker exec -it gaianet /root/gaianet/bin/gaianet info
 }
 
 function clean(){
-     curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/uninstall.sh' | bash
-     rm -rf $HOME/.wasmedge
-     rm -rf $HOME/gaianet
-     pkill -9 wasmedge
+     docker stop gaianet
+     docker rm gaianet
+     docker rmi gaianet/phi-3-mini-instruct-4k_paris
 }
 
-function upgrade(){
-     curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/install.sh' | bash -s -- --upgrade
-
-}
 
 function stop(){
-     gaianet stop
+     docker stop gaianet
+}
+
+
+function start(){
+     docker start gaianet
+     status
 }
 
 
@@ -106,19 +129,11 @@ install)
   then
      echo "-> Automatic mode, please ensure that ALL SATEA_VARS(`VadVars`) have been replaced !"
           sleep 3
-
-     #这里使用自动模式下的 安装 函数
      install
-
     else
       echo "Unrecognized variable(`VadVars`) being replaced, manual mode"
-
-      #手动模式 使用Manual 获取用户输入的变量
-
-      Manual      #获取用户输入的变量
-      . .env.sh   #导入变量
-
-      #其他安装函数
+      Manual
+      . .env.sh
       install
 
 
@@ -139,29 +154,27 @@ stop)
 stop
 
   ;;
-
-upgrade)
-upgrade
+start)
+start
 
   ;;
 
 nodeid)
 nodeid
   ;;
+
 init)
 init
   ;;
 
 **)
-
- #定义帮助信息 例子
  About
   echo "Flag:
   install              Install gaianet with manual mode,  If carrying the --auto parameter, start Automatic mode
   init                 Install Dependent packages
   stop                 Stop all gaianet
-  nodeid               show your node_id
-  upgrade              Upgrade an existing installation of gaianet
+  start                Start all gaianet
+  nodeid               Show your node_id
   clean                Remove the gaianet from your server"
   ;;
 esac
